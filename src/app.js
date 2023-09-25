@@ -36,7 +36,6 @@ const playerFactory = (mark, isTurnInitial) => {
 
     const swapTurn = () => {
         isTurn = !isTurn;
-        console.log(`player ${mark} turn is now ${isTurn}`);
     };
     const getTurn = () => isTurn;
 
@@ -72,12 +71,12 @@ const gameController = ((player1, player2, board) => {
 
     const add = (row,col) => {
         if (!_currentPlayer.getTurn()) {
-            console.log('its not their turn');
+            console.log(`its not ${JSON.stringify(_currentPlayer)}'s turn`);
             return false;
         }
         if (board.add(_currentPlayer.mark, row, col)) {
             if (_isWin()) {
-                console.log('win condition');
+                console.log(`${_currentPlayer.mark} has won!`);
                 return _currentPlayer;
             }
             _currentPlayer.swapTurn();
@@ -124,4 +123,56 @@ const gameController = ((player1, player2, board) => {
     };
 })(user,computer,gameBoard);
 
+const stringToSourceObjFactory = (string, source) => {
+    return {string, source};
+}
 
+const objectO = stringToSourceObjFactory('o', '../icons/circle.svg');
+const objectX = stringToSourceObjFactory('x', '../icons/x.svg');
+
+const scriptToDOM = ((objO, objX) => {
+    const _insert = (parent, iconSourceString) => {
+        const image = document.createElement('img');
+        image.src = iconSourceString;
+        parent.appendChild(image);
+    };
+
+    const updateGrid = (parent) => {
+        const board = gameBoard.displayBoard();
+        const length = board.length;
+        let currentRow;
+        let sourceString;
+        for (let i = 0; i < length; i++) {
+            currentRow = parent.children[i];
+            for (let j = 0; j < length; j++) {
+                if (!currentRow.children[j].hasChildNodes()){
+                    if (board[i][j] == objO.string) {
+                        sourceString = objO.source;
+                        _insert(currentRow.children[j], sourceString);
+                    }
+                    else if (board[i][j] == objX.string) {
+                        sourceString = objX.source;
+                        _insert(currentRow.children[j], sourceString);
+                    }
+                }
+            }
+        }
+    };
+    return {
+        updateGrid,
+    };
+})(objectO, objectX);
+
+const tttbox = document.getElementById('tttbox');
+const tttbuttonArray = document.querySelectorAll('.tttbutton');
+
+// Add event listener to each
+const sideLength = tttbuttonArray.length**0.5;
+for (let i = 0; i < sideLength; i++) {
+    for (let j = 0; j < sideLength; j++) {
+        tttbuttonArray[sideLength*i+j].addEventListener("mouseup", (e) => {
+            gameController.add(i,j);
+            scriptToDOM.updateGrid(tttbox);
+        } )
+    }
+}

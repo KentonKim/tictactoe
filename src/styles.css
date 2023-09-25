@@ -1,0 +1,16 @@
+.row {
+    display: flex;
+}
+
+button {
+    appearance: none;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+img {
+    width: 80%;
+}
