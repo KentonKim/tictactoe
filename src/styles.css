@@ -14,3 +14,7 @@ button {
 img {
     width: 80%;
 }
+
+.faded {
+    filter: invert(50%);
+}
