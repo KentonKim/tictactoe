@@ -68,13 +68,12 @@ const gameController = ((player1, player2, board) => {
         let hold = _otherPlayer;
         _otherPlayer = _currentPlayer;
         _currentPlayer = hold;
-        return;
     };
 
     const add = (row,col) => {
         if (!_currentPlayer.getTurn()) {
             console.log('its not their turn');
-            return;
+            return false;
         }
         if (board.add(_currentPlayer.mark, row, col)) {
             if (_isWin()) {
@@ -86,7 +85,6 @@ const gameController = ((player1, player2, board) => {
             _swapPlayers();
             return true;
         }
-        return false;
     };
 
     const _isWin = () => {
