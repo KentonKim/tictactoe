@@ -1,14 +1,93 @@
+* {
+    margin: 0;
+}
+
+:root {
+    height: 100vh;
+    width: 100vw;
+    --blue: #247291;
+    --yellow: #f8da5b;
+    --bgd: #eef2e2;
+    --bgd-light: #f5f9ee;
+    --bdg-grey: #423E3B;
+    --gap: 0.5rem;
+    font-family: 'Roboto', sans-serif;
+    font-size: 32px;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+}
+
+.row>button {
+    appearance: none;
+    border: none;
+    background-color: var(--bgd-light);
+    display: flex;
+    width: 200px;
+    height: 200px;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#top {
+    background-color: var(--bgd);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 5%;
+}
+
+#middle {
+    background-color: var(--bgd-light);
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#tttbox {
+    background-color: var(--bdg-grey);
+    display: flex;
+    flex-flow: column;
+    gap: var(--gap);
+    margin: 1rem;
+}
+
+.row {
+    display: flex;
+    gap: var(--gap);
+}
+
+#bottom {
+    background-color: var(--bgd);
+    height: 10%;
+    font-size: 16px;
+    display: flex;
+    padding-left: 15px;
+    gap: 10px;
+    align-items: center;
+}
+
+.x {
+    filter: invert(38%) sepia(25%) saturate(1236%) hue-rotate(152deg) brightness(94%) contrast(89%);
+}
+
+.o {
+    filter: invert(75%) sepia(71%) saturate(354%) hue-rotate(1deg) brightness(104%) contrast(94%)
+}
+
+
 .row {
     display: flex;
 }
 
 button {
-    appearance: none;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 img {
@@ -17,4 +96,8 @@ img {
 
 .faded {
     filter: invert(50%);
+}
+
+.icon {
+    width: 50px;
 }

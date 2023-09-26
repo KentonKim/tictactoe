@@ -4,13 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TicTacToe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:ital@0;1&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="top">
-
+        <div id="title">
+            Tic Tac TOP
+        </div>
     </div>
     <div id="middle">
+        <div id="game-options">
+            <button id="retry-bttn">Retry?</button>
+        </div>
         <div id="tttbox">
             <div id="tttrow-1" class="row">
                 <button class="tttbutton"></button>
@@ -30,7 +38,10 @@
         </div>
     </div>
     <div id="bottom">
-        <img src="../icons/circle.svg" alt="" class="faded">
+        <a href="https://github.com/KentonKim/tictactoe" class="icon" target="_blank">
+            <img src="../icons/github.svg" alt="github icon">
+        </a>
+        By Kenton
     </div>
     <script src="app.js"></script>
 </body>

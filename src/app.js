@@ -25,7 +25,16 @@ const gameBoard = ((size) => {
         return false;
     }
 
+    const clearBoard = () => {
+        for (row of _arrayBoard) {
+            for (let i = 0; i < row.length; i++) {
+                row[i] = undefined;
+            }
+        }
+    }
+
     return {
+        clearBoard,
         displayBoard,
         add,
     }
@@ -79,6 +88,7 @@ const gameController = ((player1, player2, board) => {
         if (board.add(_currentPlayer.mark, row, col)) {
             if (_isWin()) {
                 console.log(`${_currentPlayer.mark} has won!`);
+                gamePlay.endGame(_currentPlayer);
                 return _currentPlayer;
             }
             _currentPlayer.swapTurn();
@@ -127,22 +137,21 @@ const gameController = ((player1, player2, board) => {
 })(user,computer,gameBoard);
 
 const scriptToDOM = ((playerX, playerO) => {
-    const insert = (parent, iconSourceString, isHover = false) => {
+    const insert = (parent, player, isHover = false) => {
         if (parent.hasChildNodes()) {
             parent.children[0].classList.remove('faded');
             return;
         }
         const image = document.createElement('img');
-        image.src = iconSourceString;
+        image.src = player.source;
+        image.classList.add(player.mark);
         if (isHover) {
             image.classList.add('faded');
         }
         parent.appendChild(image);
     };
 
-
-
-    const updateGrid = (parent) => {
+    const updateDomGrid = (parent) => {
         const board = gameBoard.displayBoard();
         const length = board.length;
         let currentRow;
@@ -152,19 +161,30 @@ const scriptToDOM = ((playerX, playerO) => {
             for (let j = 0; j < length; j++) {
                 if (!currentRow.children[j].hasChildNodes() || currentRow.children[j].children[0].classList.contains('faded')){
                     if (board[i][j] == playerO.mark) {
-                        sourceString = playerO.source;
-                        insert(currentRow.children[j], sourceString);
+                        insert(currentRow.children[j], playerO);
                     }
                     else if (board[i][j] == playerX.mark) {
                         sourceString = playerX.source;
-                        insert(currentRow.children[j], sourceString);
+                        insert(currentRow.children[j], playerX);
                     }
                 }
             }
         }
     };
+
+    const clearDomGrid = (array) => {
+        for (button of array) {
+            if (button.hasChildNodes()){
+                for (element of button.children){
+                    element.remove();
+                };
+            };
+        };
+    };
+
     return {
-        updateGrid,
+        updateDomGrid,
+        clearDomGrid,
         insert,
     };
 })(user, computer);
@@ -172,22 +192,56 @@ const scriptToDOM = ((playerX, playerO) => {
 const tttbox = document.getElementById('tttbox');
 const tttbuttonArray = document.querySelectorAll('.tttbutton');
 
-// Add event listener to each
-const sideLength = tttbuttonArray.length**0.5;
-for (let i = 0; i < sideLength; i++) {
-    for (let j = 0; j < sideLength; j++) {
-        tttbuttonArray[sideLength*i+j].addEventListener("click", (e) => {
-            gameController.add(i,j);
-            scriptToDOM.updateGrid(tttbox);
-        });
-        tttbuttonArray[sideLength*i+j].addEventListener('mouseenter', (e) => {
-            scriptToDOM.insert(e.target, gameController.getCurrentPlayer().source, true);
-        });
-        tttbuttonArray[sideLength*i+j].addEventListener('mouseleave', (e) => {
-            if (e.target.children[0].classList.contains('faded')) {
-                e.target.children[0].remove();
+const gamePlay = ((sideLength) => {
+    let _controller;
+    const startGame = () => {
+        _controller = new AbortController;
+        _signalToRemoveEventListener = _controller.signal;
+        scriptToDOM.clearDomGrid(tttbuttonArray);
+        gameBoard.clearBoard();
+        for (let i = 0; i < sideLength; i++) {
+            for (let j = 0; j < sideLength; j++) {
+                tttbuttonArray[sideLength*i+j].addEventListener("click", (e) => {
+                    gameController.add(i,j);
+                    scriptToDOM.updateDomGrid(tttbox);
+                }, {signal: _signalToRemoveEventListener});
+                tttbuttonArray[sideLength*i+j].addEventListener('mouseenter', (e) => {
+                    scriptToDOM.insert(e.target, gameController.getCurrentPlayer(), true);
+                }, {signal: _signalToRemoveEventListener});
+                tttbuttonArray[sideLength*i+j].addEventListener('mouseleave', (e) => {
+                    if (e.target.children[0].classList.contains('faded')) {
+                        e.target.children[0].remove();
+                    }
+                }, {signal: _signalToRemoveEventListener});
             }
-        });
+        }
+    };
 
+    const endGame = (player) => {
+        _controller.abort();
+        /* TODO 
+        display
+        - winner of game
+        - button to restart game
+        */
     }
-}
+
+    return {
+        startGame,
+        endGame,
+    }
+})(tttbuttonArray.length**0.5);
+
+gamePlay.startGame()
+
+
+/* 
+En
+
+*/
+
+const retryButton = document.querySelector('#retry-bttn');
+retryButton.addEventListener('mouseup', () => {
+    gamePlay.endGame(); 
+    gamePlay.startGame()
+});
